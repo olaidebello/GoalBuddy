@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goal Buddy Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEEE9;
+    --paper-deep:#E2E3DC;
+    --ink:#181B19;
+    --ink-soft:#4A4D47;
+    --accent:#29455B;
+    --accent-soft:#3D5A73;
+    --line:#CBCCC3;
+    --line-soft:#D9DAD2;
+    --serif:'Newsreader', Georgia, serif;
+    --sans:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.55;
+  }
+
+  ::selection{background:var(--accent); color:var(--paper);}
+
+  a{color:var(--accent);}
+
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- header ---------- */
+
+  header.hero{
+    padding:96px 0 64px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .kicker{
+    font-family:var(--sans);
+    font-size:13px;
+    letter-spacing:0.02em;
+    color:var(--accent);
+    margin:0 0 22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .kicker::before{
+    content:"";
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--accent);
+  }
+
+  h1{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(38px, 6vw, 56px);
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    margin:0 0 18px;
+  }
+
+  .subhead{
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:400;
+    font-size:19px;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin:0 0 34px;
+  }
+
+  .purpose{
+    font-size:16px;
+    color:var(--ink-soft);
+    max-width:60ch;
+    margin:0 0 8px;
+  }
+
+  .purpose strong{
+    display:block;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:19px;
+    color:var(--ink);
+    margin-top:22px;
+    font-weight:500;
+  }
+
+  /* ---------- horizons ---------- */
+
+  .horizons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin:56px 0 8px;
+  }
+
+  .horizon{
+    background:var(--paper);
+    padding:28px 26px;
+  }
+
+  .horizon .label{
+    font-size:12px;
+    color:var(--accent-soft);
+    margin-bottom:10px;
+  }
+
+  .horizon h3{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:22px;
+    margin:0 0 10px;
+  }
+
+  .horizon p{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  .horizon.active{background:var(--accent); }
+  .horizon.active *{color:var(--paper) !important;}
+  .horizon.active p{color:#C9D3DA !important;}
+
+  .principle{
+    text-align:center;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:18px;
+    color:var(--accent);
+    padding:40px 0 8px;
+  }
+
+  /* ---------- section blocks ---------- */
+
+  main{padding:56px 0 40px;}
+
+  .block-intro{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:26px;
+    margin:0 0 6px;
+  }
+
+  .block-intro-sub{
+    color:var(--ink-soft);
+    font-size:15px;
+    margin:0 0 40px;
+    max-width:58ch;
+  }
+
+  details{
+    border-top:1px solid var(--line);
+  }
+
+  details:last-of-type{
+    border-bottom:1px solid var(--line);
+  }
+
+  summary{
+    list-style:none;
+    cursor:pointer;
+    display:flex;
+    align-items:baseline;
+    gap:20px;
+    padding:22px 4px;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  summary::-webkit-details-marker{display:none;}
+
+  .num{
+    font-family:var(--serif);
+    font-size:15px;
+    color:var(--accent-soft);
+    width:28px;
+    flex-shrink:0;
+    padding-top:2px;
+  }
+
+  .sum-title{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:20px;
+    flex:1;
+    transition:color .15s ease;
+  }
+
+  summary:hover .sum-title{color:var(--accent);}
+
+  .chev{
+    flex-shrink:0;
+    width:11px;
+    height:11px;
+    border-right:1.5px solid var(--ink);
+    border-bottom:1.5px solid var(--ink);
+    transform:rotate(-45deg);
+    transition:transform .25s ease;
+    margin-top:6px;
+  }
+
+  details[open] .chev{transform:rotate(45deg); margin-top:0;}
+
+  .panel{
+    padding:0 4px 30px 48px;
+    max-width:58ch;
+  }
+
+  .panel p.lead{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+  }
+
+  .group{margin-bottom:18px;}
+  .group:last-child{margin-bottom:0;}
+
+  .group-label{
+    font-size:12.5px;
+    color:var(--accent);
+    margin:0 0 8px;
+  }
+
+  ul.plain{
+    margin:0;
+    padding:0;
+    list-style:none;
+  }
+
+  ul.plain li{
+    position:relative;
+    padding:5px 0 5px 16px;
+    font-size:14.5px;
+    color:var(--ink);
+    border-bottom:1px dotted var(--line-soft);
+  }
+
+  ul.plain li:last-child{border-bottom:none;}
+
+  ul.plain li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:14px;
+    width:5px;
+    height:5px;
+    background:var(--accent-soft);
+    border-radius:50%;
+  }
+
+  .flow{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:15px;
+    color:var(--accent);
+    line-height:1.9;
+    margin:0 0 16px;
+  }
+
+  .steps{
+    counter-reset:step;
+    margin:0;
+    padding:0;
+    list-style:none;
+  }
+
+  .steps li{
+    counter-increment:step;
+    padding:10px 0;
+    font-size:14.5px;
+    border-bottom:1px dotted var(--line-soft);
+  }
+
+  .steps li:last-child{border-bottom:none;}
+
+  .steps li::before{
+    content:counter(step, decimal-leading-zero);
+    font-family:var(--serif);
+    font-style:italic;
+    color:var(--accent-soft);
+    margin-right:12px;
+  }
+
+  .steps li b{font-weight:600;}
+
+  /* ---------- definition of done ---------- */
+
+  .dod{
+    margin-top:20px;
+    border:1px solid var(--line);
+    background:var(--paper-deep);
+    padding:44px 40px;
+  }
+
+  .dod-head{
+    text-align:center;
+    margin-bottom:34px;
+  }
+
+  .dod-head .label{
+    font-size:12px;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+
+  .dod-head h2{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:28px;
+    margin:0;
+  }
+
+  .dod-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+
+  .dod-item{
+    background:var(--paper);
+    padding:20px 22px;
+  }
+
+  .dod-item h4{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:15.5px;
+    margin:0 0 6px;
+  }
+
+  .dod-item p{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  .dod-close{
+    text-align:center;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:20px;
+    color:var(--accent);
+    margin-top:36px;
+    padding-top:30px;
+    border-top:1px solid var(--line);
+  }
+
+  footer{
+    padding:50px 0 90px;
+    color:var(--ink-soft);
+    font-size:13px;
+    border-top:1px solid var(--line);
+    margin-top:40px;
+  }
+
+  @media (max-width:640px){
+    header.hero{padding:64px 0 44px;}
+    .horizons{grid-template-columns:1fr;}
+    .panel{padding-left:28px;}
+    .dod{padding:32px 20px;}
+    .dod-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="kicker">Operating Framework</p>
+    <h1>Goal Buddy<br>Operating System</h1>
+    <p class="subhead">A scalable framework for AI-enabled operations, product, customer experience &amp; growth.</p>
+    <p class="purpose">The objective is to create a lean operating system that gives the founder visibility, creates operational continuity, turns customer behaviour into product intelligence, reduces unnecessary manual work, and provides a foundation that can scale with the company.
+    <strong>Build system capability before adding operational complexity or headcount.</strong></p>
+  </header>
+
+  <section class="horizons">
+    <div class="horizon active">
+      <p class="label">Phase 1</p>
+      <h3>Launch &amp; Founder Continuity</h3>
+      <p>Build only what Goal Buddy needs now to launch, operate reliably and reduce founder dependency.</p>
+    </div>
+    <div class="horizon">
+      <p class="label">Phase 2</p>
+      <h3>Growth &amp; Scale</h3>
+      <p>Expand the operating system as traction creates new complexity and new requirements.</p>
+    </div>
+  </section>
+
+  <main>
+
+    <p class="block-intro">1 · The Operating Principle</p>
+    <p class="block-intro-sub" style="margin-bottom:24px;">Build the operating architecture before adding operational complexity. Goal Buddy should not accumulate software, processes or people simply because they are available.</p>
+
+    <details open>
+      <summary><span class="num">—</span><span class="sum-title">Five questions every component must answer</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">This creates a business where systems support people, rather than people compensating for disconnected systems.</p>
+        <ul class="plain">
+          <li>What outcome does this support?</li>
+          <li>What information does it require?</li>
+          <li>Where should that information live?</li>
+          <li>What should happen automatically?</li>
+          <li>When does a human need to intervene?</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">02</span><span class="sum-title">The Minimum Operating Architecture</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Rather than building all seven domains immediately, Phase 1 establishes the minimum viable operating architecture across the areas that matter most at launch. The commercial layer is acknowledged from the beginning, but doesn't need a sophisticated growth architecture before there is meaningful launch data.</p>
+        <div class="group">
+          <p class="group-label">Customer</p>
+          <ul class="plain"><li>Identity</li><li>Onboarding</li><li>Support</li><li>Key product interactions</li><li>Feedback</li><li>Subscription status</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Product</p>
+          <ul class="plain"><li>Development workflow</li><li>Feature / issue ownership</li><li>Blockers</li><li>Releases</li><li>Customer feedback</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Finance</p>
+          <ul class="plain"><li>Payments</li><li>Expenses</li><li>Financial records</li><li>Reconciliation</li><li>Cash visibility</li><li>Obligations</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Operations</p>
+          <ul class="plain"><li>Tasks</li><li>Owners</li><li>Deadlines</li><li>Recurring processes</li><li>SOPs</li><li>Risks</li><li>Decisions</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Governance</p>
+          <ul class="plain"><li>Company setup</li><li>Contracts</li><li>Legal / admin obligations</li><li>Renewals</li><li>Documentation</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Intelligence</p>
+          <ul class="plain"><li>Weekly reporting</li><li>Operational exceptions</li><li>Risks</li><li>Decisions requiring Rosie</li></ul>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">03</span><span class="sum-title">Information Architecture</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Before implementing or changing systems, establish the core business entities and their relationships. The immediate objective is not building a huge database — it is establishing one coherent business language.</p>
+        <div class="group">
+          <p class="group-label">Customer</p>
+          <ul class="plain"><li>Identity</li><li>Acquisition source</li><li>Onboarding status</li><li>Goals</li><li>Engagement</li><li>Product interactions</li><li>Support history</li><li>Subscription</li><li>Feedback</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Product</p>
+          <ul class="plain"><li>Feature</li><li>Initiative</li><li>Development status</li><li>Release</li><li>Bug</li><li>Customer feedback</li><li>Outcome</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Finance</p>
+          <ul class="plain"><li>Payment</li><li>Subscription</li><li>Refund</li><li>Expense</li><li>Revenue</li><li>Obligation</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Operations</p>
+          <ul class="plain"><li>Task</li><li>Owner</li><li>Deadline</li><li>Process</li><li>SOP</li><li>Risk</li><li>Decision</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Governance</p>
+          <ul class="plain"><li>Contract</li><li>Obligation</li><li>Renewal</li><li>Filing</li><li>Responsible person</li><li>Deadline</li></ul>
+        </div>
+        <p class="lead" style="margin-top:18px;">Terms such as <em>active user</em>, <em>customer</em>, <em>completed goal</em>, <em>support issue</em>, <em>revenue</em> and <em>churn</em> should have defined meanings. This gives the AI layer reliable context later.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">04</span><span class="sum-title">Customer Operations</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Goal Buddy's customer experience should be treated as a journey. For Phase 1, the priority is understanding and controlling the early stages.</p>
+        <p class="flow">Acquisition → Onboarding → First Value → Engagement → Behaviour Change → Retention</p>
+        <div class="group">
+          <p class="group-label">Establish</p>
+          <ul class="plain">
+            <li>What happens when someone enters the product</li>
+            <li>What constitutes successful onboarding</li>
+            <li>What constitutes first value</li>
+            <li>How support requests are handled</li>
+            <li>Who owns customer issues</li>
+            <li>How issues are escalated</li>
+            <li>How feedback reaches the product process</li>
+          </ul>
+        </div>
+        <p class="lead" style="margin-top:18px;">The goal is to move from <em>"We have users"</em> to <em>"We understand whether users are reaching value and where they are getting stuck."</em></p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">05</span><span class="sum-title">Customer → Product Intelligence Loop</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Even at launch, customer service should not exist separately from product development. This creates the foundation for the much more sophisticated customer intelligence system in Phase 2.</p>
+        <p class="flow">Customer behaviour → Signal → Classification → Insight → Action</p>
+        <ol class="steps">
+          <li>Multiple users struggle with the same part of the experience</li>
+          <li>Support identifies the recurring issue</li>
+          <li>The issue is classified and surfaced to product</li>
+          <li>Product determines whether a change is warranted</li>
+          <li>The outcome is measured</li>
+        </ol>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">06</span><span class="sum-title">Product Operating System</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Phase 1 does not require an elaborate product organisation — it requires clarity. This prevents product development from becoming a collection of disconnected requests.</p>
+        <div class="group">
+          <p class="group-label">Every significant product item needs</p>
+          <ul class="plain"><li>Objective</li><li>Owner</li><li>Priority</li><li>Status</li><li>Dependency</li><li>Expected outcome</li><li>Evidence for why it matters</li></ul>
+        </div>
+        <p class="flow" style="margin-top:18px;">Signal → Prioritisation → Development → Release → Measurement</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">07</span><span class="sum-title">Financial Operating System</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Phase 1 establishes reliable financial control across three layers.</p>
+        <div class="group">
+          <p class="group-label">Transactional finance</p>
+          <ul class="plain"><li>Payments</li><li>Subscriptions</li><li>Refunds</li><li>Expenses</li><li>Invoices</li><li>Reconciliation</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Management visibility</p>
+          <ul class="plain"><li>Revenue</li><li>Recurring revenue</li><li>Costs</li><li>Cash position</li><li>Financial commitments</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Operational finance</p>
+          <ul class="plain"><li>Failed payments</li><li>Upcoming obligations</li><li>Renewals</li><li>Outstanding financial actions</li></ul>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">08</span><span class="sum-title">Company &amp; Governance Setup</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">The company setup becomes a controlled workflow rather than a collection of administrative tasks.</p>
+        <div class="group">
+          <p class="group-label">Company infrastructure</p>
+          <ul class="plain"><li>Registration</li><li>Banking</li><li>Tax-related workflows</li><li>Payment infrastructure</li><li>Accounting</li><li>Insurance where applicable</li><li>Policies</li><li>Documentation</li></ul>
+        </div>
+        <p class="flow" style="margin-top:18px;">Owner → Status → Deadline → Dependency → Evidence → Next Action</p>
+        <p class="lead">Where specialist legal, tax or accounting judgement is required, the process should clearly identify when an external professional needs to be involved.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">09</span><span class="sum-title">Contract &amp; Legal Administration</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Contracts should not simply live in folders. Each important agreement should have:</p>
+        <ul class="plain">
+          <li>Counterparty</li><li>Agreement type</li><li>Owner</li><li>Start date</li><li>End date</li><li>Renewal date</li><li>Financial commitment</li><li>Obligations</li><li>Required actions</li><li>Status</li>
+        </ul>
+        <p class="lead" style="margin-top:18px;">The immediate goal is simple: no important contract or obligation should depend on the founder remembering it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">10</span><span class="sum-title">Internal Operations System</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">For every recurring process, establish the following — this is the minimum structure required to create operational continuity.</p>
+        <ul class="plain">
+          <li><b>Owner</b> — Who is responsible?</li>
+          <li><b>Trigger</b> — What causes the process to begin?</li>
+          <li><b>Procedure</b> — What happens?</li>
+          <li><b>Expected output</b> — What does completion look like?</li>
+          <li><b>Deadline</b> — When must it happen?</li>
+          <li><b>Escalation</b> — What happens when something goes wrong?</li>
+          <li><b>Documentation</b> — Where does the knowledge live?</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">11</span><span class="sum-title">Founder Continuity System</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">One of the most important Phase 1 components: Goal Buddy should continue operating when Rosie temporarily steps away. Four decision levels are established.</p>
+        <ul class="plain">
+          <li><b>Level 1 — Autonomous.</b> Routine decisions handled within established rules.</li>
+          <li><b>Level 2 — Operational.</b> Operations owns the action and reports it through the normal reporting cycle.</li>
+          <li><b>Level 3 — Approval.</b> Rosie's approval is required before execution.</li>
+          <li><b>Level 4 — Specialist.</b> Legal, financial, technical or other specialist expertise is required.</li>
+        </ul>
+        <p class="flow" style="margin-top:18px;">Owner → Decision authority → Escalation path → Expected response</p>
+        <p class="lead">The objective isn't to remove Rosie from the business — it is to ensure her involvement is reserved for decisions where her judgement adds the most value.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">12</span><span class="sum-title">AI Ops Manager v1</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">The centrepiece of Phase 1. The AI Ops Manager sits above the operating systems, not in place of them, and develops through four stages.</p>
+        <ol class="steps">
+          <li><b>Observe</b> — customer service, product, finance, marketing activity, operations, contracts</li>
+          <li><b>Analyse</b> — changes, anomalies, trends, recurring problems, risks, bottlenecks, upcoming obligations</li>
+          <li><b>Recommend</b> — priorities, recommended actions, decisions requiring attention, explanations, supporting evidence</li>
+          <li><b>Execute</b> — predefined, low-risk actions trigger approved workflows; higher-risk actions remain human-controlled</li>
+        </ol>
+        <p class="lead" style="margin-top:18px;">The first version doesn't need to be a fully autonomous AI employee. It needs to be a reliable AI operational intelligence layer.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">13</span><span class="sum-title">Weekly Intelligence Cycle</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">The AI Ops Manager produces a concise weekly operating brief across five areas.</p>
+        <div class="group">
+          <p class="group-label">Customer</p>
+          <ul class="plain"><li>New users</li><li>Onboarding / activation</li><li>Engagement</li><li>Support trends</li><li>Recurring issues</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Product</p>
+          <ul class="plain"><li>Progress</li><li>Blockers</li><li>Important issues</li><li>Customer-driven insights</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Finance</p>
+          <ul class="plain"><li>Revenue</li><li>Significant movements</li><li>Failed payments</li><li>Upcoming obligations</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Operations</p>
+          <ul class="plain"><li>Overdue work</li><li>Contractor activity</li><li>Operational risks</li><li>Upcoming deadlines</li></ul>
+        </div>
+        <div class="group">
+          <p class="group-label">Founder Decisions</p>
+          <ul class="plain"><li>What does Rosie actually need to decide this week?</li></ul>
+        </div>
+        <p class="lead" style="margin-top:18px;">This is critical: the AI should reduce information overload, not become another information source Rosie has to monitor.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">14</span><span class="sum-title">Exception-Based Management</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Phase 1 establishes the principle: manage by exception, not constant supervision. The system should remain quiet when everything is working, and surface:</p>
+        <ul class="plain">
+          <li>Overdue work</li><li>Unexpected metric changes</li><li>Recurring customer problems</li><li>Payment failures</li><li>Financial thresholds</li><li>Contract renewals</li><li>Product blockers</li><li>Operational failures</li><li>Decisions requiring Rosie</li>
+        </ul>
+        <p class="lead" style="margin-top:18px;">This is how a small team can remain controlled without becoming bureaucratic.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="num">15</span><span class="sum-title">Phase 1 Build Method</span><span class="chev"></span></summary>
+      <div class="panel">
+        <p class="lead">Implemented sequentially, in eight steps.</p>
+        <ol class="steps">
+          <li><b>Discover</b> — map current systems, workflows, people, data, customer journey, product process, financial processes, company obligations</li>
+          <li><b>Diagnose</b> — identify gaps, duplication, manual dependencies, unclear ownership, disconnected data, founder bottlenecks, reporting blind spots, unnecessary complexity</li>
+          <li><b>Design</b> — define sources of truth, workflows, ownership, decision rights, reporting, automation opportunities</li>
+          <li><b>Implement</b> — build the highest-value components first</li>
+          <li><b>Integrate</b> — connect the systems that need to communicate</li>
+          <li><b>Automate</b> — only after the underlying process is reliable</li>
+          <li><b>Intelligence</b> — layer AI onto reliable operational information</li>
+          <li><b>Test</b> — founder absence, exception handling, reporting, escalation, operational continuity</li>
+        </ol>
+      </div>
+    </details>
+
+    <div class="dod">
+      <div class="dod-head">
+        <p class="label">At the end of the initial period</p>
+        <h2>Phase 1 Definition of Done</h2>
+      </div>
+      <div class="dod-grid">
+        <div class="dod-item">
+          <h4>Company &amp; Finance</h4>
+          <p>Core company, financial and payment infrastructure is operational.</p>
+        </div>
+        <div class="dod-item">
+          <h4>Customer Service</h4>
+          <p>Customer issues have clear ownership, resolution paths and escalation.</p>
+        </div>
+        <div class="dod-item">
+          <h4>Contracts</h4>
+          <p>Important agreements and obligations are visible, owned and proactively managed.</p>
+        </div>
+        <div class="dod-item">
+          <h4>Product</h4>
+          <p>Product work has clear ownership, priorities and feedback pathways.</p>
+        </div>
+        <div class="dod-item">
+          <h4>AI Ops</h4>
+          <p>AI Ops v1 can observe relevant information, produce useful insights and surface actions and decisions.</p>
+        </div>
+        <div class="dod-item">
+          <h4>Weekly Reporting</h4>
+          <p>Rosie receives a concise operating picture without manually assembling it.</p>
+        </div>
+        <div class="dod-item">
+          <h4>Founder Continuity</h4>
+          <p>The business has clear decision rights and escalation paths during her planned leave.</p>
+        </div>
+        <div class="dod-item">
+          <h4>Trust</h4>
+          <p>Rosie no longer needs to personally verify every operational detail.</p>
+        </div>
+      </div>
+      <p class="dod-close">Systems support people — not the other way around.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    Goal Buddy Operating System — Phase 1 Framework
+  </footer>
+</div>
+
+</body>
+</html>
